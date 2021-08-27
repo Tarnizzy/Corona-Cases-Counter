@@ -42,8 +42,10 @@ public class CoronaVirusDataService {
            locationStats.setCountry(record.get("Country_Region"));
            int numOfDeaths = Integer.parseInt(record.get("Deaths"));
            int numberOfCases = Integer.parseInt(record.get("Confirmed"));
+           int numOfActiveCases = Integer.parseInt(record.get("Deaths"));
            locationStats.setNumOfDeaths(numOfDeaths);
            locationStats.setLatestReportedTotal(numberOfCases);
+        locationStats.setNumOfActiveCases(numOfActiveCases);
            newStats.add(locationStats);
        }
         this.allStats = newStats;
@@ -56,5 +58,18 @@ public class CoronaVirusDataService {
        return targetCountryName;
     }
 
+    public int returnTotalNumberOfDeaths(){
+       Stream <LocationStats> deathData = allStats.stream();
+       int totaldeaths = deathData.mapToInt(LocationStats::getNumOfDeaths).sum();
+       return totaldeaths;
+    }
+
+    public int returnTotalNumberOfActiveCases(String countryName){
+        Stream <LocationStats> activeCasesData = allStats.stream();
+        Optional<LocationStats> targetCountry = activeCasesData.filter(Data->Data.getCountry().equals(countryName)).findFirst();
+        int totalActiveCases = targetCountry.get().getNumOfActiveCases();
+        System.out.println(totalActiveCases);
+        return totalActiveCases;
+    }
 
 }
